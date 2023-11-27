@@ -60,16 +60,10 @@ namespace Lister.Database.Migrations
                         .HasColumnType("int")
                         .HasColumnName("answer_id");
 
-                    b.Property<int>("QuestionID")
-                        .HasColumnType("int")
-                        .HasColumnName("question_id");
-
                     b.HasKey("CorrectAnswerID");
 
                     b.HasIndex("AnswerID")
                         .IsUnique();
-
-                    b.HasIndex("QuestionID");
 
                     b.ToTable("CorrectAnswer", (string)null);
                 });
@@ -165,10 +159,6 @@ namespace Lister.Database.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserAnswerID"));
 
-                    b.Property<int>("QuestionID")
-                        .HasColumnType("int")
-                        .HasColumnName("question_id");
-
                     b.Property<int>("SelectedAnswerID")
                         .HasColumnType("int")
                         .HasColumnName("selected_answer_id");
@@ -178,8 +168,6 @@ namespace Lister.Database.Migrations
                         .HasColumnName("user_id");
 
                     b.HasKey("UserAnswerID");
-
-                    b.HasIndex("QuestionID");
 
                     b.HasIndex("SelectedAnswerID");
 
@@ -245,15 +233,7 @@ namespace Lister.Database.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Lister.Core.Models.Question", "Question")
-                        .WithMany("CorrectAnswers")
-                        .HasForeignKey("QuestionID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Answer");
-
-                    b.Navigation("Question");
                 });
 
             modelBuilder.Entity("Lister.Core.Models.Question", b =>
@@ -269,12 +249,6 @@ namespace Lister.Database.Migrations
 
             modelBuilder.Entity("Lister.Core.Models.UserAnswer", b =>
                 {
-                    b.HasOne("Lister.Core.Models.Question", "Question")
-                        .WithMany("UserAnswers")
-                        .HasForeignKey("QuestionID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Lister.Core.Models.Answer", "SelectedAnswer")
                         .WithMany("UserAnswers")
                         .HasForeignKey("SelectedAnswerID")
@@ -286,8 +260,6 @@ namespace Lister.Database.Migrations
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Question");
 
                     b.Navigation("SelectedAnswer");
 
@@ -322,10 +294,6 @@ namespace Lister.Database.Migrations
             modelBuilder.Entity("Lister.Core.Models.Question", b =>
                 {
                     b.Navigation("Answers");
-
-                    b.Navigation("CorrectAnswers");
-
-                    b.Navigation("UserAnswers");
                 });
 
             modelBuilder.Entity("Lister.Core.Models.Test", b =>

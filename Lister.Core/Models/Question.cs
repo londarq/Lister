@@ -9,6 +9,4 @@ public class Question
 
     public Test Test { get; set; }
     public List<Answer> Answers { get; set; }
-    public List<UserAnswer> UserAnswers { get; set; }
-    public List<CorrectAnswer> CorrectAnswers { get; set; }
 }

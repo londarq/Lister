@@ -117,7 +117,6 @@ namespace Lister.Database.Migrations
                 {
                     correct_answer_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    question_id = table.Column<int>(type: "int", nullable: false),
                     answer_id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -129,12 +128,6 @@ namespace Lister.Database.Migrations
                         principalTable: "Answer",
                         principalColumn: "answer_id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CorrectAnswer_Question_question_id",
-                        column: x => x.question_id,
-                        principalTable: "Question",
-                        principalColumn: "question_id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -144,7 +137,6 @@ namespace Lister.Database.Migrations
                     user_answer_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     user_id = table.Column<int>(type: "int", nullable: false),
-                    question_id = table.Column<int>(type: "int", nullable: false),
                     selected_answer_id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -155,12 +147,6 @@ namespace Lister.Database.Migrations
                         column: x => x.selected_answer_id,
                         principalTable: "Answer",
                         principalColumn: "answer_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserAnswer_Question_question_id",
-                        column: x => x.question_id,
-                        principalTable: "Question",
-                        principalColumn: "question_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserAnswer_User_user_id",
@@ -182,19 +168,9 @@ namespace Lister.Database.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CorrectAnswer_question_id",
-                table: "CorrectAnswer",
-                column: "question_id");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Question_test_id",
                 table: "Question",
                 column: "test_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserAnswer_question_id",
-                table: "UserAnswer",
-                column: "question_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserAnswer_selected_answer_id",

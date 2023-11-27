@@ -27,16 +27,6 @@ namespace Lister.Database.Configuration
                 .WithOne(ca => ca.Question)
                 .HasForeignKey(ca => ca.QuestionID)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasMany(q => q.CorrectAnswers)
-                .WithOne(ca => ca.Question)
-                .HasForeignKey(ca => ca.QuestionID)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasMany(q => q.UserAnswers)
-                .WithOne(ua => ua.Question)
-                .HasForeignKey(ua => ua.QuestionID)
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

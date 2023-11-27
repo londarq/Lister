@@ -12,14 +12,8 @@ namespace Lister.Database.Configuration
 
             builder.Property(ca => ca.CorrectAnswerID)
                 .HasColumnName("correct_answer_id");
-            builder.Property(ca => ca.QuestionID)
-                .HasColumnName("question_id");
             builder.Property(ca => ca.AnswerID)
                 .HasColumnName("answer_id");
-
-            builder.HasOne(ca => ca.Question)
-                .WithMany(q => q.CorrectAnswers)
-                .HasForeignKey(ca => ca.QuestionID);
 
             builder.HasOne(ca => ca.Answer)
                 .WithOne(a => a.CorrectAnswer)

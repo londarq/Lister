@@ -1,6 +1,6 @@
-﻿using Lister.Services.ApiModels;
-using Lister.Services.Login;
+﻿using Lister.Services.Login;
 using Lister.Services.Models;
+using Lister.Services.Models.ApiModels;
 
 namespace Lister.Services.Services.UserService;
 

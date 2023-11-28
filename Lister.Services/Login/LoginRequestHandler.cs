@@ -1,5 +1,6 @@
 ﻿using Lister.Database;
 using Lister.Services.Abstractions;
+using Lister.Services.Authentification;
 using Lister.Services.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,14 +16,16 @@ public class LoginRequestHandler : ILoginRequestHandler
         _jwtProvider = jwtProvider;
     }
 
-    public async Task<ExecutionResult<string>> HandleAsync(LoginRequest request)
+    public async Task<ExecutionResult<string>> HandleAsync(AuthRequest request)
     {
-        if (string.IsNullOrEmpty(request.Nickname))
+        if (string.IsNullOrEmpty(request.Nickname) || string.IsNullOrEmpty(request.Nickname))
         {
             return ExecutionResult<string>.Failed("One or more required parameters are missing");
         }
 
         using var dbContext = await _pooledFactory.CreateDbContextAsync();
+
+        //check hash
 
         var user = await dbContext.Users.SingleOrDefaultAsync(x => x.Nickname == request.Nickname);
 

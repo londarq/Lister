@@ -32,7 +32,12 @@ public class LoginRequestHandler : ILoginRequestHandler
         }
 
         string token = _jwtProvider.Generate(user);
-        
+
+        if (string.IsNullOrEmpty(token))
+        {
+            return ExecutionResult<string>.Failed("Token generation error");
+        }
+
         return ExecutionResult<string>.Successful(token);
     }
 }

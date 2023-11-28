@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Lister.Services.Authentification;
 
-internal sealed class JwtProvider : IJwtProvider
+public class JwtProvider : IJwtProvider
 {
     private readonly JwtOptions _jwtOptions;
 
@@ -26,6 +26,7 @@ internal sealed class JwtProvider : IJwtProvider
         var signedCredetials = new SigningCredentials(
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey)),
             SecurityAlgorithms.HmacSha256);
+
         var token = new JwtSecurityToken(
             _jwtOptions.Issuer,
             _jwtOptions.Audience,

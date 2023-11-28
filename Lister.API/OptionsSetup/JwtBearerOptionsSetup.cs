@@ -6,9 +6,8 @@ using System.Text;
 
 namespace Lister.API.OptionsSetup;
 
-public class JwtBearerOptionsSetup : IConfigureOptions<JwtBearerOptions>
+public class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOptions>
 {
-    private const string SectionName = "Jwt";
     private readonly JwtOptions _jwtOptions;
 
     public JwtBearerOptionsSetup(IOptions<JwtOptions> jwtOptions)
@@ -29,4 +28,10 @@ public class JwtBearerOptionsSetup : IConfigureOptions<JwtBearerOptions>
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey))
         };
     }
+
+    public void Configure(string? name, JwtBearerOptions options)
+    {
+        Configure(options);
+    }
 }
+ 

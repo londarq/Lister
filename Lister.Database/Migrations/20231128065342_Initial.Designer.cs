@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lister.Database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231127065752_Initial")]
+    [Migration("20231128065342_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -138,15 +138,15 @@ namespace Lister.Database.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserID"));
 
+                    b.Property<string>("Nickname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("nickname");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("password");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("username");
 
                     b.HasKey("UserID");
 

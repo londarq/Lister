@@ -12,7 +12,7 @@ namespace Lister.Database.Configuration
 
             builder.Property(u => u.UserID)
                 .HasColumnName("user_id");
-            builder.Property(u => u.Username)
+            builder.Property(u => u.Nickname)
                 .HasColumnName("username")
                 .IsRequired();
             builder.Property(u => u.Password)

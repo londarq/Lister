@@ -1,11 +1,19 @@
+using Lister.API.OptionsSetup;
 using Lister.Database;
+using Lister.Services.Login;
+using Lister.Services.Abstractions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Lister.Services.Services.UserService;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<ILoginRequestHandler, LoginRequestHandler>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddPooledDbContextFactory<ApplicationDbContext>((serviceProvider, options) =>
 {
@@ -15,6 +23,10 @@ builder.Services.AddPooledDbContextFactory<ApplicationDbContext>((serviceProvide
         b.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
     });
 });
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+builder.Services.ConfigureOptions<JwtOptionsSetup>();
+builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
 
 var app = builder.Build();
 
@@ -26,6 +38,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

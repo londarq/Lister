@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.14" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Lister.Core\Lister.Core.csproj" />
     <ProjectReference Include="..\Lister.Database\Lister.Database.csproj" />
   </ItemGroup>

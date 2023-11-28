@@ -1,5 +1,4 @@
 ﻿using Lister.Database;
-using Lister.Services.Authentification;
 using Lister.Services.Models;
 using Lister.Services.Models.ApiModels;
 using Microsoft.EntityFrameworkCore;
@@ -29,10 +28,5 @@ public class UserService : IUserService
             : new UserApiModel() { Nickname = user.Nickname };
 
         return ExecutionResult<UserApiModel>.Successful(result);
-    }
-
-    public async Task<ExecutionResult<UserApiModel>> CreateUserAsync(AuthRequest model)
-    {
-
     }
 }

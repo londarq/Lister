@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lister.Database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231128065342_Initial")]
+    [Migration("20231128151658_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -143,10 +143,15 @@ namespace Lister.Database.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("nickname");
 
-                    b.Property<string>("Password")
+                    b.Property<byte[]>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("password");
+                        .HasColumnType("varbinary(max)")
+                        .HasColumnName("password_hash");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)")
+                        .HasColumnName("password_salt");
 
                     b.HasKey("UserID");
 

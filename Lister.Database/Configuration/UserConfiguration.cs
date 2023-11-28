@@ -15,8 +15,11 @@ namespace Lister.Database.Configuration
             builder.Property(u => u.Nickname)
                 .HasColumnName("nickname")
                 .IsRequired();
-            builder.Property(u => u.Password)
-                .HasColumnName("password")
+            builder.Property(u => u.PasswordHash)
+                .HasColumnName("password_hash")
+                .IsRequired();
+            builder.Property(u => u.PasswordSalt)
+                .HasColumnName("password_salt")
                 .IsRequired();
 
             builder.HasMany(u => u.UserAnswers)

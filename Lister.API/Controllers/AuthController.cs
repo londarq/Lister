@@ -8,11 +8,11 @@ namespace Lister.API.Controllers;
 [Route("api")]
 public class AuthController : ControllerBase
 {
-    private readonly ILoginRequestHandler _loginRequestHandler;
+    private readonly IAuthRequestHandler _authRequestHandler;
 
-    public AuthController(ILoginRequestHandler loginRequestHandler)
+    public AuthController(IAuthRequestHandler authRequestHandler)
     {
-        _loginRequestHandler = loginRequestHandler;
+        _authRequestHandler = authRequestHandler;
     }
 
     [HttpPost]
@@ -29,7 +29,7 @@ public class AuthController : ControllerBase
             return UnprocessableEntity("Password is required");
         }
 
-        var tokenResult = await _loginRequestHandler.HandleAsync(request);
+        var tokenResult = await _authRequestHandler.HandleRegisterAsync(request);
 
         if (!tokenResult.IsSuccessful)
         {
@@ -53,7 +53,7 @@ public class AuthController : ControllerBase
             return UnprocessableEntity("Password is required");
         }
 
-        var tokenResult = await _loginRequestHandler.HandleAsync(request);
+        var tokenResult = await _authRequestHandler.HandleLoginAsync(request);
 
         if (!tokenResult.IsSuccessful)
         {

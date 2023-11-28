@@ -34,7 +34,8 @@ namespace Lister.Database.Migrations
                     user_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     nickname = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    password_hash = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    password_salt = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
                 },
                 constraints: table =>
                 {

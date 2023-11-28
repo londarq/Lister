@@ -1,6 +1,5 @@
 using Lister.API.OptionsSetup;
 using Lister.Database;
-using Lister.Services.Login;
 using Lister.Services.Abstractions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -41,7 +40,7 @@ builder.Services.AddSwaggerGen(options => {
 });
 
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
-builder.Services.AddScoped<ILoginRequestHandler, LoginRequestHandler>();
+builder.Services.AddScoped<IAuthRequestHandler, AuthRequestHandler>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddPooledDbContextFactory<ApplicationDbContext>((serviceProvider, options) =>

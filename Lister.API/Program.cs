@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Lister.Services.Services.UserService;
 using Lister.Services.Authentification;
 using Microsoft.OpenApi.Models;
+using Lister.Services.Services.TestService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +43,7 @@ builder.Services.AddSwaggerGen(options => {
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IAuthRequestHandler, AuthRequestHandler>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITestService, TestService>();
 
 builder.Services.AddPooledDbContextFactory<ApplicationDbContext>((serviceProvider, options) =>
 {
@@ -57,6 +59,10 @@ builder.Services.ConfigureOptions<JwtOptionsSetup>();
 builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
 
 var app = builder.Build();
+
+app.UseCors(options => options.WithOrigins("http://localhost:3000")
+    .AllowAnyMethod()
+    .AllowAnyHeader());
 
 if (app.Environment.IsDevelopment())
 {

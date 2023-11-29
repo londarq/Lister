@@ -396,3 +396,21 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+lister/node_modules
+lister/.pnp
+lister/.pnp.js
+
+lister/coverage
+
+lister/build
+
+lister/.DS_Store
+lister/.env.local
+lister/.env.development.local
+lister/.env.test.local
+lister/.env.production.local
+
+lister/npm-debug.log*
+lister/yarn-debug.log*
+lister/yarn-error.log*

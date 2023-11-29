@@ -23,7 +23,4 @@ public class TestsController : ControllerBase
 
         return result.IsSuccessful ? Ok(result.Data) : NotFound(result.ErrorMessage);
     }
-
-    //[HttpGet("{userId}")]
-    //public async Task<ActionResult> GetTestById(int id)
 }

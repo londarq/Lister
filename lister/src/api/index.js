@@ -10,10 +10,21 @@ export const ENDPOINTS = {
   getAnswers: 'question/getanswers',
 }
 
-export const createAPIEndpoint = (endpoint) => {
+export const createAPIEndpoint = (endpoint, token) => {
   let url = BASE_URL + 'api/' + endpoint + '/'
+
   return {
-    fetch: () => axios.get(url),
+    fetch: () =>
+      axios.get(
+        url,
+        !token
+          ? {}
+          : {
+              headers: {
+                Authorization: 'Bearer ' + token,
+              },
+            }
+      ),
     fetchById: (id) => axios.get(url + id),
     post: (newRecord) => axios.post(url, newRecord),
     put: (id, updatedRecord) => axios.put(url + id, updatedRecord),

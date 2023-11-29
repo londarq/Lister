@@ -7,6 +7,7 @@ using Lister.Services.Services.UserService;
 using Lister.Services.Authentification;
 using Microsoft.OpenApi.Models;
 using Lister.Services.Services.TestService;
+using Lister.Services.Services.QuestionService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +45,7 @@ builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IAuthRequestHandler, AuthRequestHandler>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITestService, TestService>();
+builder.Services.AddScoped<IQuestionService, QuestionService>();
 
 builder.Services.AddPooledDbContextFactory<ApplicationDbContext>((serviceProvider, options) =>
 {
@@ -62,7 +64,8 @@ var app = builder.Build();
 
 app.UseCors(options => options.WithOrigins("http://localhost:3000")
     .AllowAnyMethod()
-    .AllowAnyHeader());
+    .AllowAnyHeader() 
+    .AllowAnyOrigin());
 
 if (app.Environment.IsDevelopment())
 {

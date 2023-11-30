@@ -29,7 +29,7 @@ export default function Login() {
       createAPIEndpoint(ENDPOINTS.login)
         .post(values)
         .then((res) => {
-          setContext({ token: res.data })
+          setContext({ userId: res.data.userId, token: res.data.token })
           navigate('/tests-list')
         })
         .catch((err) => console.log(err))
@@ -75,7 +75,7 @@ export default function Login() {
                 name='password'
                 variant='outlined'
                 value={values.password}
-                password
+                type='password'
                 onChange={handleInputChange}
                 {...(errors.password && {
                   error: true,

@@ -4,6 +4,6 @@ using Lister.Services.Models;
 namespace Lister.Services.Abstractions;
 public interface IAuthRequestHandler
 {
-    Task<ExecutionResult<string>> HandleRegisterAsync(AuthRequest request);
-    Task<ExecutionResult<string>> HandleLoginAsync(AuthRequest request);
+    Task<ExecutionResult<AuthResponse>> HandleRegisterAsync(AuthRequest request);
+    Task<ExecutionResult<AuthResponse>> HandleLoginAsync(AuthRequest request);
 }

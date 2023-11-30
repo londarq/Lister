@@ -7,6 +7,7 @@ const getFreshContext = () => {
     localStorage.setItem(
       'context',
       JSON.stringify({
+        userId: 0,
         token: '',
         timeTaken: 0,
         selectedAnswers: [],

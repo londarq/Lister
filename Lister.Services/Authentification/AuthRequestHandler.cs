@@ -17,11 +17,11 @@ public class AuthRequestHandler : IAuthRequestHandler
         _jwtProvider = jwtProvider;
     }
 
-    public async Task<ExecutionResult<string>> HandleRegisterAsync(AuthRequest request)
+    public async Task<ExecutionResult<AuthResponse>> HandleRegisterAsync(AuthRequest request)
     {
         if (!IsAuthRequestValid(request, out string validationMessage))
         {
-            return ExecutionResult<string>.Failed(validationMessage);
+            return ExecutionResult<AuthResponse>.Failed(validationMessage);
         }
 
         using var dbContext = await _pooledFactory.CreateDbContextAsync();
@@ -33,29 +33,29 @@ public class AuthRequestHandler : IAuthRequestHandler
             PasswordHash = passwordHash,
             PasswordSalt = passwordSalt
         };
-        await dbContext.Users.AddAsync(newUser);
+        var createdUser = await dbContext.Users.AddAsync(newUser);
         var changedRows = await dbContext.SaveChangesAsync();
 
         if (changedRows == 0)
         {
-            return ExecutionResult<string>.Failed("User creation error");
+            return ExecutionResult<AuthResponse>.Failed("User creation error");
         }
 
         string token = _jwtProvider.Generate(newUser);
 
         if (string.IsNullOrEmpty(token))
         {
-            return ExecutionResult<string>.Failed("Token generation error");
+            return ExecutionResult<AuthResponse>.Failed("Token generation error");
         }
 
-        return ExecutionResult<string>.Successful(token);
+        return ExecutionResult<AuthResponse>.Successful(new AuthResponse(createdUser.Entity.UserID, token));
     }
 
-    public async Task<ExecutionResult<string>> HandleLoginAsync(AuthRequest request)
+    public async Task<ExecutionResult<AuthResponse>> HandleLoginAsync(AuthRequest request)
     {
         if (!IsAuthRequestValid(request, out string validationMessage))
         {
-            return ExecutionResult<string>.Failed(validationMessage);
+            return ExecutionResult<AuthResponse>.Failed(validationMessage);
         }
 
         using var dbContext = await _pooledFactory.CreateDbContextAsync();
@@ -64,22 +64,22 @@ public class AuthRequestHandler : IAuthRequestHandler
 
         if (user is null)
         {
-            return ExecutionResult<string>.Failed("Such user does not exist");
+            return ExecutionResult<AuthResponse>.Failed("Such user does not exist");
         }
 
         if (!PasswordHashHandler.VerifyHash(request.Password, user.PasswordHash, user.PasswordSalt))
         {
-            return ExecutionResult<string>.Failed("Password is incorrect");
+            return ExecutionResult<AuthResponse>.Failed("Password is incorrect");
         }
 
         string token = _jwtProvider.Generate(user);
 
         if (string.IsNullOrEmpty(token))
         {
-            return ExecutionResult<string>.Failed("Token generation error");
+            return ExecutionResult<AuthResponse>.Failed("Token generation error");
         }
 
-        return ExecutionResult<string>.Successful(token);
+        return ExecutionResult<AuthResponse>.Successful(new AuthResponse((int)user?.UserID, token));
     }
 
     private static bool IsAuthRequestValid(AuthRequest request, out string validationMessage)

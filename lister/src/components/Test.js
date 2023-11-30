@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { createAPIEndpoint, ENDPOINTS, BASE_URL } from '../api'
+import { createAPIEndpoint, ENDPOINTS } from '../api'
 import useStateContext from '../hooks/useStateContext'
+import { getFormatedTime } from '../helper'
 import {
   Card,
   CardContent,
-  CardMedia,
   CardHeader,
   List,
   ListItemButton,
@@ -16,7 +16,6 @@ import {
   Button,
 } from '@mui/material'
 import { ArrowForward, ArrowBack, DoneOutline } from '@mui/icons-material'
-// import { getFormatedTime } from '../helper'
 import { useNavigate } from 'react-router'
 
 export default function Test() {
@@ -27,25 +26,28 @@ export default function Test() {
   const navigate = useNavigate()
 
   let { id } = useParams()
+  let timer
 
-  //   let timer
-
-  //   const startTimer = () => {
-  //     timer = setInterval(() => {
-  //       setTimeTaken((prev) => prev + 1)
-  //     }, [1000])
-  //   }
+  const startTimer = () => {
+    timer = setInterval(() => {
+      setTimeTaken((prev) => prev + 1)
+    }, [1000])
+  }
 
   useEffect(() => {
     createAPIEndpoint(ENDPOINTS.questions, context.token)
       .fetchById('?testId=' + id)
       .then((res) => {
         setQns(res.data)
-        console.log(res.data)
+        startTimer()
       })
       .catch((err) => {
         console.log(err)
       })
+
+    return () => {
+      clearInterval(timer)
+    }
   }, [])
 
   const toggleAnswer = (qnId, answerIdx) => {
@@ -81,6 +83,54 @@ export default function Test() {
     setContext({ selectedAnswers: temp })
   }
 
+  const submit = () => {
+    let calculatedScore
+
+    createAPIEndpoint(ENDPOINTS.answers, context.token)
+      .fetch()
+      .then((res) => {
+        const testAnswers = qns.flatMap(question => question.answers.map(answer => answer.answerID));
+        //get local correct answers from all
+        //intersect it with user answers and get ratio
+        // или не ratio - подумать
+        calculatedScore = 
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+
+    
+    const dateStub = new Date().getTime().toJSON();
+    const testHistory = {
+      userId: context.userId,
+      testId: id,
+      startTime: dateStub,
+      endTime: dateStub,
+      score: calculatedScore
+    }
+
+    createAPIEndpoint(ENDPOINTS.questions, context.token)
+      .post(testHistory)
+      .then((res) => {
+        setQns(res.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+
+    const userAnswers = []
+    createAPIEndpoint(ENDPOINTS.questions, context.token)
+      .post(userAnswers)
+      .then((res) => {
+        setQns(res.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+
+    navigate('/result')
+  }
+
   return qns.length !== 0 ? (
     <Card
       sx={{
@@ -92,7 +142,7 @@ export default function Test() {
     >
       <CardHeader
         title={'Question ' + qnIndex + ' of ' + qns.length}
-        //action={<Typography>{getFormatedTime(timeTaken)}</Typography>}
+        action={<Typography>{getFormatedTime(timeTaken)}</Typography>}
       />
       <Box>
         <LinearProgress
@@ -143,9 +193,9 @@ export default function Test() {
               variant='contained'
               size='small'
               startIcon={<DoneOutline />}
-              onClick={() => navigate('/result')}
+              onClick={() => submit()}
             >
-              Finish
+              Submit
             </Button>
           ) : (
             <Button

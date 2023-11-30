@@ -29,14 +29,14 @@ public class AuthController : ControllerBase
             return UnprocessableEntity("Password is required");
         }
 
-        var tokenResult = await _authRequestHandler.HandleRegisterAsync(request);
+        var authResponse = await _authRequestHandler.HandleRegisterAsync(request);
 
-        if (!tokenResult.IsSuccessful)
+        if (!authResponse.IsSuccessful)
         {
-            return BadRequest(tokenResult.ErrorMessage);
+            return BadRequest(authResponse.ErrorMessage);
         }
         
-        return Ok(tokenResult.Data);
+        return Ok(authResponse.Data);
     }
 
     [HttpPost]
@@ -53,13 +53,13 @@ public class AuthController : ControllerBase
             return UnprocessableEntity("Password is required");
         }
 
-        var tokenResult = await _authRequestHandler.HandleLoginAsync(request);
+        var authResponse = await _authRequestHandler.HandleLoginAsync(request);
 
-        if (!tokenResult.IsSuccessful)
+        if (!authResponse.IsSuccessful)
         {
-            return BadRequest(tokenResult.ErrorMessage);
+            return BadRequest(authResponse.ErrorMessage);
         }
 
-        return Ok(tokenResult.Data);
+        return Ok(authResponse.Data);
     }
 }

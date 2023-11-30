@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
-import { createAPIEndpoint, ENDPOINTS, BASE_URL } from '../api'
+import { createAPIEndpoint, ENDPOINTS } from '../api'
 import useStateContext from '../hooks/useStateContext'
-import { List, Card, CardContent, CardHeader, Typography } from '@mui/material'
+import { Card, CardContent, CardHeader, Typography } from '@mui/material'
 
 export default function TestsList() {
   const [tests, setTests] = useState([])
-  const { context, setContext } = useStateContext()
+  const { context } = useStateContext()
   const navigate = useNavigate()
 
   useEffect(() => {

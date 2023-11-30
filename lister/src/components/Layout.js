@@ -19,7 +19,9 @@ export default function Layout() {
           <Typography variant='h4' align='center' sx={{ flexGrow: 1 }}>
             Lister
           </Typography>
-          <Button onClick={logout}>Logout</Button>
+          <Button onClick={logout} variant='outlined' color='warning'>
+            Logout
+          </Button>
         </Toolbar>
       </AppBar>
       <Container>

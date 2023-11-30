@@ -19,7 +19,7 @@ public class QuestionService : IQuestionService
 
         var questions = await dbContext.Questions
             .Where(q => q.TestID == testId && q.Answers.Any(a => a.QuestionID == q.QuestionID))
-            .Include(q => q.Answers.Any(a => a.QuestionID == q.QuestionID))
+            .Include(q => q.Answers)
             .ToListAsync();
 
         var models = questions.Select(q => new QuestionApiModel()

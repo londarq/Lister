@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { createAPIEndpoint, ENDPOINTS, BASE_URL } from '../api'
 import useStateContext from '../hooks/useStateContext'
 import {
@@ -10,62 +11,77 @@ import {
   ListItemButton,
   Typography,
   Box,
+  Stack,
   LinearProgress,
+  Button,
 } from '@mui/material'
-import { getFormatedTime } from '../helper'
+import { ArrowForward, ArrowBack, DoneOutline } from '@mui/icons-material'
+// import { getFormatedTime } from '../helper'
 import { useNavigate } from 'react-router'
 
 export default function Test() {
   const [qns, setQns] = useState([])
-  const [qnIndex, setQnIndex] = useState(0)
+  const [qnIndex, setQnIndex] = useState(1)
   const [timeTaken, setTimeTaken] = useState(0)
   const { context, setContext } = useStateContext()
   const navigate = useNavigate()
 
-  let timer
+  let { id } = useParams()
 
-  const startTimer = () => {
-    timer = setInterval(() => {
-      setTimeTaken((prev) => prev + 1)
-    }, [1000])
-  }
+  //   let timer
+
+  //   const startTimer = () => {
+  //     timer = setInterval(() => {
+  //       setTimeTaken((prev) => prev + 1)
+  //     }, [1000])
+  //   }
 
   useEffect(() => {
-    setContext({
-      timeTaken: 0,
-      selectedOptions: [],
-    })
-    createAPIEndpoint(ENDPOINTS.question)
-      .fetch()
+    createAPIEndpoint(ENDPOINTS.questions, context.token)
+      .fetchById('?testId=' + id)
       .then((res) => {
         setQns(res.data)
-        startTimer()
+        console.log(res.data)
       })
       .catch((err) => {
         console.log(err)
       })
-
-    return () => {
-      clearInterval(timer)
-    }
   }, [])
 
-  const updateAnswer = (qnId, optionIdx) => {
-    const temp = [...context.selectedOptions]
-    temp.push({
+  const toggleAnswer = (qnId, answerIdx) => {
+    let temp = [...context.selectedAnswers]
+    let selectedAnswer = {
       qnId,
-      selected: optionIdx,
-    })
-    if (qnIndex < 4) {
-      setContext({ selectedOptions: [...temp] })
-      setQnIndex(qnIndex + 1)
-    } else {
-      setContext({ selectedOptions: [...temp], timeTaken })
-      navigate('/result')
+      selected: answerIdx,
     }
+
+    console.log(selectedAnswer)
+
+    if (
+      temp.some(
+        (item) =>
+          item.qnId === selectedAnswer.qnId &&
+          item.selected === selectedAnswer.selected
+      )
+    ) {
+      console.log('before splice:' + temp)
+      temp = temp.filter(
+        (item) =>
+          !(
+            item.qnId === selectedAnswer.qnId &&
+            item.selected === selectedAnswer.selected
+          )
+      )
+      console.log('after splice:' + temp)
+    } else {
+      console.log('push:' + selectedAnswer)
+      temp.push(selectedAnswer)
+    }
+
+    setContext({ selectedAnswers: temp })
   }
 
-  return qns.length != 0 ? (
+  return qns.length !== 0 ? (
     <Card
       sx={{
         maxWidth: 640,
@@ -75,38 +91,73 @@ export default function Test() {
       }}
     >
       <CardHeader
-        title={'Question ' + (qnIndex + 1) + ' of 5'}
-        action={<Typography>{getFormatedTime(timeTaken)}</Typography>}
+        title={'Question ' + qnIndex + ' of ' + qns.length}
+        //action={<Typography>{getFormatedTime(timeTaken)}</Typography>}
       />
       <Box>
         <LinearProgress
           variant='determinate'
-          value={((qnIndex + 1) * 100) / 5}
+          value={(qnIndex * 100) / qns.length}
         />
       </Box>
-      {qns[qnIndex].imageName != null ? (
-        <CardMedia
-          component='img'
-          image={BASE_URL + 'images/' + qns[qnIndex].imageName}
-          sx={{ width: 'auto', m: '10px auto' }}
-        />
-      ) : null}
       <CardContent>
-        <Typography variant='h6'>{qns[qnIndex].qnInWords}</Typography>
+        <Typography variant='h6'>{qns[qnIndex - 1].questionText}</Typography>
         <List>
-          {qns[qnIndex].options.map((item, idx) => (
+          {qns[qnIndex - 1].answers.map((answer, idx) => (
             <ListItemButton
-              disableRipple
               key={idx}
-              onClick={() => updateAnswer(qns[qnIndex].qnId, idx)}
+              sx={
+                context.selectedAnswers.some(
+                  (item) =>
+                    item.qnId === qnIndex && item.selected === answer.answerID
+                )
+                  ? {
+                      border: 1,
+                      borderRadius: 1,
+                      borderColor: 'secondary.main',
+                      mt: 1,
+                    }
+                  : { mt: 1 }
+              }
+              onClick={() => toggleAnswer(qnIndex, answer.answerID)}
             >
               <div>
                 <b>{String.fromCharCode(65 + idx) + ' . '}</b>
-                {item}
+                {answer.answerText}
               </div>
             </ListItemButton>
           ))}
         </List>
+        <Stack direction='row' justifyContent='space-between' sx={{ pt: 2 }}>
+          <Button
+            variant='contained'
+            size='small'
+            startIcon={<ArrowBack />}
+            disabled={qnIndex === 1}
+            onClick={() => setQnIndex(qnIndex - 1)}
+          >
+            Go Back
+          </Button>
+          {qnIndex === qns.length ? (
+            <Button
+              variant='contained'
+              size='small'
+              startIcon={<DoneOutline />}
+              onClick={() => navigate('/result')}
+            >
+              Finish
+            </Button>
+          ) : (
+            <Button
+              variant='contained'
+              size='small'
+              endIcon={<ArrowForward />}
+              onClick={() => setQnIndex(qnIndex + 1)}
+            >
+              Next
+            </Button>
+          )}
+        </Stack>
       </CardContent>
     </Card>
   ) : null

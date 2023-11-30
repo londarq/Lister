@@ -1,0 +1,33 @@
+USE ListerDb;
+GO
+
+SET ANSI_NULLS ON;
+SET ANSI_PADDING ON;
+SET QUOTED_IDENTIFIER ON;
+GO
+
+IF NOT EXISTS (SELECT * FROM CorrectAnswer)
+BEGIN
+	INSERT INTO CorrectAnswer (answer_id) 
+	VALUES (2),
+		   (5),
+		   (6),
+		   (7),
+		   (8)
+END
+GO
+
+/* -- Rollback
+
+USE ListerDb;
+GO
+
+SET ANSI_NULLS ON;
+SET ANSI_PADDING ON;
+SET QUOTED_IDENTIFIER ON;
+GO
+
+DELETE CorrectAnswer;
+GO
+
+--*/

@@ -9,7 +9,7 @@ const getFreshContext = () => {
       JSON.stringify({
         token: '',
         timeTaken: 0,
-        selectedOptions: [],
+        selectedAnswers: [],
       })
     )
   return JSON.parse(localStorage.getItem('context'))

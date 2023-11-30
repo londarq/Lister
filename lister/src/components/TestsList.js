@@ -23,7 +23,8 @@ export default function TestsList() {
       {tests.map((test, idx) => {
         return (
           <Card
-            onClick={() => navigate(`/test${idx}`)}
+            key={idx}
+            onClick={() => navigate(`/test/${test.testId}`)}
             sx={{
               maxWidth: 640,
               mx: 'auto',

@@ -84,43 +84,51 @@ export default function Test() {
   }
 
   const submit = () => {
-    let calculatedScore
+    const answersId = qns.flatMap((q) => q.answers.map((a) => a.answerID))
+    const selectedAnswersId = context.selectedAnswers.map((sa) => sa.selected)
+
+    createAPIEndpoint(ENDPOINTS.answers, context.token)
+      .post(
+        selectedAnswersId.map((sa) => ({
+          userId: context.userId,
+          selectedAnswerId: sa,
+        }))
+      )
+      .then((res) => {
+        console.log('Answers saved')
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+
+    let temp
 
     createAPIEndpoint(ENDPOINTS.answers, context.token)
       .fetch()
       .then((res) => {
-        const testAnswers = qns.flatMap(question => question.answers.map(answer => answer.answerID));
-        //get local correct answers from all
-        //intersect it with user answers and get ratio
-        // или не ratio - подумать
-        calculatedScore = 
+        temp = res.data.map((a) => a.answerID)
+        console.log('Got correct answers')
       })
       .catch((err) => {
         console.log(err)
       })
-
-    
-    const dateStub = new Date().getTime().toJSON();
+    const correctAnswersId = temp
+    const correctSelectionsId = correctAnswersId.filter((a) =>
+      selectedAnswersId.includes(a)
+    )
+    const calculatedScore =
+      (correctSelectionsId.length / answersId.length) * 100
+    const dateStub = new Date().getTime().toJSON()
     const testHistory = {
       userId: context.userId,
       testId: id,
-      startTime: dateStub,
-      endTime: dateStub,
-      score: calculatedScore
+      startTimestamp: dateStub,
+      finishTimestamp: dateStub,
+      score: calculatedScore,
     }
 
-    createAPIEndpoint(ENDPOINTS.questions, context.token)
+    createAPIEndpoint(ENDPOINTS.history, context.token)
       .post(testHistory)
-      .then((res) => {
-        setQns(res.data)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-
-    const userAnswers = []
-    createAPIEndpoint(ENDPOINTS.questions, context.token)
-      .post(userAnswers)
       .then((res) => {
         setQns(res.data)
       })

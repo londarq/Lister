@@ -8,6 +8,8 @@ using Lister.Services.Authentification;
 using Microsoft.OpenApi.Models;
 using Lister.Services.Services.TestService;
 using Lister.Services.Services.QuestionService;
+using Lister.Services.Services.HistoryService;
+using Lister.Services.Services.AnswerService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +48,8 @@ builder.Services.AddScoped<IAuthRequestHandler, AuthRequestHandler>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITestService, TestService>();
 builder.Services.AddScoped<IQuestionService, QuestionService>();
+builder.Services.AddScoped<IHistoryService, HistoryService>();
+builder.Services.AddScoped<IAnswerService, AnswerService>();
 
 builder.Services.AddPooledDbContextFactory<ApplicationDbContext>((serviceProvider, options) =>
 {

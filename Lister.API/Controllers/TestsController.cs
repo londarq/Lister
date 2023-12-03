@@ -1,4 +1,5 @@
-﻿using Lister.Services.Services.TestService;
+﻿using Lister.Core.Models;
+using Lister.Services.Services.TestService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,10 +17,10 @@ public class TestsController : ControllerBase
         _testService = testService;
     }
 
-    [HttpGet]
-    public async Task<ActionResult> GetTests()
+    [HttpGet("{userId}")]
+    public async Task<ActionResult> GetUserTests(int userId)
     {
-        var result = await _testService.GetTestsAsync();
+        var result = await _testService.GetUserTestsAsync(userId);
 
         return result.IsSuccessful ? Ok(result.Data) : NotFound(result.ErrorMessage);
     }

@@ -29,4 +29,13 @@ public class HistoryController : ControllerBase
 
         return result.IsSuccessful ? Ok() : NotFound(result.ErrorMessage);
     }
+
+    [HttpGet("{testId}")]
+    public async Task<ActionResult> GetTestHistoryByTestId(int testId)
+    {
+        var result = await _historyService.GetTestHistoryByTestIdAsync(testId);
+
+        return result.IsSuccessful ? Ok(result.Data) : NotFound(result.ErrorMessage);
+    }
+
 }

@@ -36,14 +36,14 @@ export default function Test() {
 
   useEffect(() => {
     createAPIEndpoint(ENDPOINTS.questions, context.token)
-      .fetchById('?testId=' + id)
+      .fetchById(id)
       .then((res) => {
         setQns(res.data)
-        startTimer()
       })
       .catch((err) => {
         console.log(err)
       })
+      .finally(startTimer())
 
     return () => {
       clearInterval(timer)
@@ -84,7 +84,6 @@ export default function Test() {
   }
 
   const submit = () => {
-    const answersId = qns.flatMap((q) => q.answers.map((a) => a.answerID))
     const selectedAnswersId = context.selectedAnswers.map((sa) => sa.selected)
 
     createAPIEndpoint(ENDPOINTS.answers, context.token)
@@ -95,48 +94,58 @@ export default function Test() {
         }))
       )
       .then((res) => {
-        console.log('Answers saved')
+        console.log('1/3. Answers saved')
       })
       .catch((err) => {
         console.log(err)
       })
-
-    let temp
 
     createAPIEndpoint(ENDPOINTS.answers, context.token)
       .fetch()
       .then((res) => {
-        temp = res.data.map((a) => a.answerID)
-        console.log('Got correct answers')
+        console.log('2/3. Got correct answers')
+        const testAnswersId = qns.flatMap((q) =>
+          q.answers.map((a) => a.answerID)
+        )
+        console.log('testAnswersId = ' + testAnswersId)
+
+        const correctAnswersId = res.data
+          .map((a) => a.answerID)
+          .filter((ca) => testAnswersId.includes(ca))
+        console.log('correctAnswersId = ' + correctAnswersId)
+
+        const correctSelectionsId = correctAnswersId.filter((a) =>
+          selectedAnswersId.includes(a)
+        )
+        console.log('correctSelectionsId = ' + correctSelectionsId)
+
+        const calculatedScore =
+          (correctSelectionsId.length / correctAnswersId.length) * 100
+        //todo
+        const dateStub = new Date().toISOString()
+
+        const testHistory = {
+          userId: context.userId,
+          testId: id,
+          startTimestamp: dateStub,
+          finishTimestamp: dateStub,
+          score: Math.trunc(calculatedScore),
+        }
+
+        createAPIEndpoint(ENDPOINTS.history, context.token)
+          .post(testHistory)
+          .then((res) => {
+            console.log('3/3. The test is now history')
+            setContext({ timeTaken: 0, selectedAnswers: [] })
+            navigate(`/result/${id}`)
+          })
+          .catch((err) => {
+            console.log(err)
+          })
       })
       .catch((err) => {
         console.log(err)
       })
-    const correctAnswersId = temp
-    const correctSelectionsId = correctAnswersId.filter((a) =>
-      selectedAnswersId.includes(a)
-    )
-    const calculatedScore =
-      (correctSelectionsId.length / answersId.length) * 100
-    const dateStub = new Date().getTime().toJSON()
-    const testHistory = {
-      userId: context.userId,
-      testId: id,
-      startTimestamp: dateStub,
-      finishTimestamp: dateStub,
-      score: calculatedScore,
-    }
-
-    createAPIEndpoint(ENDPOINTS.history, context.token)
-      .post(testHistory)
-      .then((res) => {
-        setQns(res.data)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-
-    navigate('/result')
   }
 
   return qns.length !== 0 ? (

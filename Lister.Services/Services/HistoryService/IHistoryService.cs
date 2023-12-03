@@ -6,4 +6,6 @@ namespace Lister.Services.Services.HistoryService;
 public interface IHistoryService
 {
     Task<ExecutionResult> CreateTetsHistoryAsync(TestHistoryApiModel testHistory);
+    Task<ExecutionResult<TestHistoryApiModel>> GetTestHistoryByTestIdAsync(int userId);
+
 }

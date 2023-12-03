@@ -11,7 +11,7 @@ export default function TestsList() {
 
   useEffect(() => {
     createAPIEndpoint(ENDPOINTS.tests, context.token)
-      .fetch()
+      .fetchById(context.userId)
       .then((res) => {
         setTests(res.data)
       })
@@ -20,25 +20,66 @@ export default function TestsList() {
 
   return (
     <>
-      {tests.map((test, idx) => {
-        return (
-          <Card
-            key={idx}
-            onClick={() => navigate(`/test/${test.testId}`)}
-            sx={{
-              maxWidth: 640,
-              mx: 'auto',
-              mt: 5,
-              '& .MuiCardHeader-action': { m: 0, alignSelf: 'center' },
-            }}
-          >
-            <CardHeader title={test.name} />
-            <CardContent>
-              <Typography variant='h6'>{test.description}</Typography>
-            </CardContent>
-          </Card>
-        )
-      })}
+      <Typography variant='h4' align='center' sx={{ p: 3 }}>
+        Test yourself
+      </Typography>
+
+      <div>
+        {tests
+          .filter(
+            (t) =>
+              !t.userTestHistory.some((uth) => uth.UserID !== context.userId)
+          )
+          .map((test, idx) => {
+            return (
+              <TestCard
+                test={test}
+                key={idx}
+                onClick={() => navigate(`/test/${test.testId}`)}
+              />
+            )
+          })}
+      </div>
+
+      <div>
+        <Typography variant='h4' align='center' sx={{ p: 3 }}>
+          Your results
+        </Typography>
+
+        {tests
+          .filter((t) =>
+            t.userTestHistory.some((uth) => uth.UserID !== context.userId)
+          )
+          .map((test, idx) => {
+            return (
+              <TestCard
+                test={test}
+                key={idx}
+                onClick={() => navigate(`/result/${test.testId}`)}
+              />
+            )
+          })}
+      </div>
     </>
+  )
+}
+
+function TestCard({ test, idx, onClick }) {
+  return (
+    <Card
+      key={idx}
+      onClick={onClick}
+      sx={{
+        maxWidth: 640,
+        mx: 'auto',
+        mt: 5,
+        '& .MuiCardHeader-action': { m: 0, alignSelf: 'center' },
+      }}
+    >
+      <CardHeader title={test.name} />
+      <CardContent>
+        <Typography variant='h6'>{test.description}</Typography>
+      </CardContent>
+    </Card>
   )
 }

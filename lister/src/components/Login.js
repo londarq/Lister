@@ -13,16 +13,16 @@ const getFreshModel = () => ({
 })
 
 export default function Login() {
-  const { context, setContext, resetContext } = useStateContext()
+  const { setContext, resetContext } = useStateContext()
   const navigate = useNavigate()
-  const { values, setValues, errors, setErrors, handleInputChange } =
+  const { values, errors, setErrors, handleInputChange } =
     useForm(getFreshModel)
 
   useEffect(() => {
     resetContext()
   }, [])
 
-  const login = (e) => {
+  const login = async (e) => {
     e.preventDefault()
 
     if (validate())

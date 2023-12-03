@@ -8,6 +8,8 @@ export const ENDPOINTS = {
   users: 'users',
   questions: 'questions',
   answers: 'answers',
+  userAnswers: 'userAnswers',
+  history: 'history',
 }
 
 export const createAPIEndpoint = (endpoint, token) => {

@@ -35,4 +35,21 @@ public class HistoryService : IHistoryService
             ? ExecutionResult.Successful()
             : ExecutionResult.Failed("Error while saving test history");
     }
+
+    public async Task<ExecutionResult<TestHistoryApiModel>> GetTestHistoryByTestIdAsync(int testId)
+    {
+        using var dbContext = await _pooledFactory.CreateDbContextAsync();
+
+        var testHistory = await dbContext.UserTestsHistory.FirstOrDefaultAsync(uth => uth.TestID == testId);
+        var model = new TestHistoryApiModel()
+        {
+            TestID = testHistory.TestID,
+            UserID = testHistory.UserID,
+            StartTimestamp = testHistory.StartTimestamp,
+            FinishTimestamp = testHistory.FinishTimestamp,
+            Score = testHistory.Score,
+        };
+
+        return ExecutionResult<TestHistoryApiModel>.Successful(model);
+    }
 }

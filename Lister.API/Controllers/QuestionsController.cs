@@ -17,7 +17,7 @@ public class QuestionsController : ControllerBase
         _questionService = questionService;
     }
 
-    [HttpGet]
+    [HttpGet("{testId}")]
     public async Task<ActionResult> GetQuestionsByTestId(int testId)
     {
         if (testId < 1) 

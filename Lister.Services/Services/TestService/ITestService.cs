@@ -5,5 +5,5 @@ namespace Lister.Services.Services.TestService;
 
 public interface ITestService
 {
-    Task<ExecutionResult<List<TestApiModel>>> GetTestsAsync();
+    Task<ExecutionResult<List<TestApiModel>>> GetUserTestsAsync(int userId);
 }

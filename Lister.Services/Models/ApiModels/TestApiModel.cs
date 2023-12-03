@@ -7,5 +7,6 @@ public class TestApiModel
     public string Description { get; set; }
     public string? ImageSrc { get; set; }
     public int TimeLimitSec { get; set; }
+
+    public List<TestHistoryApiModel> UserTestHistory { get; set; }
 }
-    

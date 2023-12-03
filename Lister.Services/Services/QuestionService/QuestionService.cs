@@ -19,7 +19,7 @@ public class QuestionService : IQuestionService
         using var dbContext = await _pooledFactory.CreateDbContextAsync();
 
         var questions = await dbContext.Questions
-            .Where(q => q.TestID == testId && q.Answers.Any(a => a.QuestionID == q.QuestionID))
+            .Where(q => q.TestID == testId)
             .Include(q => q.Answers)
             .ToListAsync();
 

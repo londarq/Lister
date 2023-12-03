@@ -14,11 +14,13 @@ public class TestService : ITestService
         _pooledFactory = pooledFactory;
     }
 
-    public async Task<ExecutionResult<List<TestApiModel>>> GetTestsAsync()
+    public async Task<ExecutionResult<List<TestApiModel>>> GetUserTestsAsync(int userId)
     {
         using var dbContext = await _pooledFactory.CreateDbContextAsync();
 
-        var tests = await dbContext.Tests.ToListAsync();
+        var tests = await dbContext.Tests
+            .Include(t => t.UserTestHistory.Where(uth => uth.UserID == userId))
+            .ToListAsync();
         var models = tests.Select(t => new TestApiModel()
         {
             TestId = t.TestId,
@@ -26,6 +28,13 @@ public class TestService : ITestService
             Description = t.Description,
             ImageSrc = t.ImageSrc,
             TimeLimitSec = t.TimeLimitSec,
+            UserTestHistory = t.UserTestHistory.Select(uth => new TestHistoryApiModel()
+            {
+                UserID = userId,
+                TestID = uth.TestID,
+                StartTimestamp = uth.StartTimestamp,
+                FinishTimestamp = uth.FinishTimestamp,
+            }).ToList()
         });
 
         return ExecutionResult<List<TestApiModel>>.Successful(models.ToList());

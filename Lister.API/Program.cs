@@ -10,6 +10,7 @@ using Lister.Services.Services.TestService;
 using Lister.Services.Services.QuestionService;
 using Lister.Services.Services.HistoryService;
 using Lister.Services.Services.AnswerService;
+using Lister.Services.Services.UserAnswerService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +51,7 @@ builder.Services.AddScoped<ITestService, TestService>();
 builder.Services.AddScoped<IQuestionService, QuestionService>();
 builder.Services.AddScoped<IHistoryService, HistoryService>();
 builder.Services.AddScoped<IAnswerService, AnswerService>();
+builder.Services.AddScoped<IUserAnswerService, UserAnswerService>();
 
 builder.Services.AddPooledDbContextFactory<ApplicationDbContext>((serviceProvider, options) =>
 {
